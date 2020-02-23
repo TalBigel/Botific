@@ -6,6 +6,10 @@ import * as http_request from 'request';
 import * as figlet from 'figlet';
 admin.initializeApp();
 
+export const talTest = functions.https.onRequest(async(request, response) => {
+    response.send("Hello");
+});
+
 export const sayHi = functions.https.onRequest(async(request, response) => {
     let fonts:string[] = ["Standard", "Train"];
     let randomIndex:number = Math.floor(Math.random() * (fonts.length));
