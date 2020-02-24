@@ -128,7 +128,39 @@ exports.runEpisode = functions.https.onRequest((request, response) => __awaiter(
     let cachebuster = cachebusters[episodeName];
     let episodeUrl = "http://static1.matific.com/content/episodes/" + episodeUnderscore +
         "/index$" + cachebuster + ".html?review=true&language=en&chooseRandomSeed=true";
-    response.send(episodeUrl);
+    let episodeNameBlock = {
+        "type": "section",
+        "text": {
+            "type": "mrkdwn",
+            "text": "========== Episode: " + episodeName + "=========="
+        }
+    };
+    let variantsText = "";
+    for (let variant of episodeInfos["parameterPaths"]) {
+        variantsText = variantsText + variant.replace("Parameters/", "") + "\n";
+    }
+    let parameterPaths = episodeInfos["parameterPaths"];
+    let variantsBlocks = [];
+    for (let path of parameterPaths) {
+        variantsBlocks.push({
+            "type": "mrkdwn",
+            "text": "\n<" + episodeUrl + "&" + path + "|" + path + ">"
+        });
+    }
+    let variantsContainerBlock = {
+        "type": "section",
+        "text": {
+            "type": "mrkdwn",
+            "text": variantsText
+        }
+    };
+    let episodeResponse = {
+        "blocks": [
+            episodeNameBlock,
+            variantsContainerBlock
+        ]
+    };
+    response.send(episodeResponse);
 }));
 exports.lmnbify = functions.https.onRequest((request, response) => {
     let text = request.body.text;
