@@ -1966,8 +1966,8 @@ export const talPleaseEnjoyTelAviv = functions.https.onRequest((request, respons
 export const appVersionInfo = functions.https.onRequest((request, response) => {
     let text:string = request.body.text;
     if (text) {
-        let requestedApp:string = text.split(" ")[0];
-        let requestedPlatform:string = text.split(" ")[1];
+        let requestedApp:string = text.split(" ")[0].toLowerCase();
+        let requestedPlatform:string = text.split(" ")[1].toLowerCase();
         let appVersion:string = apps["appsInfo"][requestedApp][requestedPlatform].version;
         response.send(appVersion);
     }
@@ -2027,6 +2027,13 @@ export const appVersionInfo = functions.https.onRequest((request, response) => {
                         ]
                     }
                 },
+                {
+                    "type": "button",
+                    "text": {
+                        "type": "plain_text",
+                        "text": "Search"
+                    }
+                }
             ]
         };
         response.send(responseBlock);
