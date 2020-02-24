@@ -16,11 +16,24 @@ export const episodeInfo = functions.https.onRequest(async (request, response) =
     let text: string = request.body.text;
     //let payload: any = request.body.payload;
     let specificEpisodeInfo = {};
+    let found:boolean = false;
 
     for (let episode of episodes["infoList"]) {
-        if (text == episode.name) {
+        if (text.toLowerCase() == episode["name"].toLowerCase()) {
             specificEpisodeInfo = episode;
+            found = true;
+            break;
         }
+
+    }
+    if (!found){
+        response.send("No info for episode "+text+"."+" Please provide the episode dev name!")
+        return;
+    }
+
+    let variantsText = "";
+    for (let variant of specificEpisodeInfo["parameterPaths"]){
+        variantsText+variant.replace("Parameters/", "")+"\n";
     }
 
     let infoResponse:any = {
@@ -50,6 +63,14 @@ export const episodeInfo = functions.https.onRequest(async (request, response) =
                     {
                         "type": "mrkdwn",
                         "text": "*storyboardUrl:*\n<"+specificEpisodeInfo["storyboardUrl"]+"|Story Board>"
+                    },
+                    {
+                        "type": "mrkdwn",
+                        "text": "*ownerName:*\n"+specificEpisodeInfo["ownerName"]
+                    },
+                    {
+                        "type": "mrkdwn",
+                        "text": "*variants:*\n"+variantsText
                     }
                 ]
             }
