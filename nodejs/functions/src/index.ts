@@ -2023,7 +2023,7 @@ export const appVersionInfo = functions.https.onRequest((request, response) => {
                     },
                     {
                         "type": "mrkdwn",
-                        "text": "*Notes:*\n<"+appData["notes"]
+                        "text": "*Notes:*\n"+appData["notes"]
                     }
                 ]
             }]

@@ -115,6 +115,7 @@ exports.sayHi = functions.https.onRequest((request, response) => __awaiter(void 
 exports.runEpisode = functions.https.onRequest((request, response) => __awaiter(void 0, void 0, void 0, function* () {
     let text = request.body.text;
     let payload = request.body.payload;
+    text = text.replace(/\s\s+/g, ' ');
     let episodeInfos = {};
     let found = false;
     let desiredEpisode = "";
@@ -1986,12 +1987,13 @@ exports.appVersionInfo = functions.https.onRequest((request, response) => {
         let requestedApp = text.split(" ")[0].toLowerCase();
         let requestedPlatform = text.split(" ")[1].toLowerCase();
         let appData = apps["appsInfo"][requestedApp][requestedPlatform];
+        let gameName = requestedApp == "pop" ? "Planet Of Pixels" : "Matific Monster Collection";
         let responseBlock = {
             "blocks": [{
                     "type": "section",
                     "text": {
                         "type": "mrkdwn",
-                        "text": "========== Game: " + requestedApp + "=========="
+                        "text": "========== Game: " + gameName + "=========="
                     }
                 },
                 {
