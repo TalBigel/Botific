@@ -2126,7 +2126,7 @@ export const localizationInfo = functions.https.onRequest(async(request, respons
                 "type": "section",
                 "text": {
                     "type": "mrkdwn",
-                    "text": "========== Language: "+specificLanguageInfo["name"]+"=========="
+                    "text": "========== Language: "+specificLanguageInfo["name"]+" =========="
                 }
             },
             {
@@ -2142,15 +2142,15 @@ export const localizationInfo = functions.https.onRequest(async(request, respons
                     },
                     {
                         "type": "mrkdwn",
-                        "text": "*Geographic Locale:*\n<"+specificLanguageInfo["geographicLocale"]
+                        "text": "*Geographic Locale:*\n"+specificLanguageInfo["geographicLocale"]
                     },
                     {
                         "type": "mrkdwn",
-                        "text": "*direction:*\n"+specificLanguageInfo["direction"]
+                        "text": "*Voiceover Enabled?:*\n"+specificLanguageInfo["enableVoiceOver"]
                     },
                     {
                         "type": "mrkdwn",
-                        "text": "*enableMachineVoiceover:*\n"+specificLanguageInfo["specificLanguageInfo"]
+                        "text": "*Machine Voiceover Enabled?:*\n"+specificLanguageInfo["enableMachineVoiceover"]
                     }
                 ]
             }
