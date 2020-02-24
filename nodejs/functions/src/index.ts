@@ -75,7 +75,7 @@ export const runEpisode = functions.https.onRequest(async (request, response) =>
         return "_" + y.toLowerCase()
     }).replace(/^_/, "");
     let cachebuster = cachebusters[episodeName];
-    let episodeUrl = "http://matifictest-a.akamaihd.net/content/episodes/" + episodeUnderscore +
+    let episodeUrl = "http://http://static1.matific.com/content/episodes/" + episodeUnderscore +
         "/index$" + cachebuster + ".html?review=true&language=en&chooseRandomSeed=true";
     response.send(episodeUrl);
 });
