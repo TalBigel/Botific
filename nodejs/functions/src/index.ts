@@ -6,6 +6,7 @@ import * as http_request from 'request';
 import * as figlet from 'figlet';
 import * as episodes from '../metadata/episodes-info.json';
 import * as apps from '..metadata/apps-metadata.json';
+import * as cachebusters from '../cachebuster-metadata.json';
 admin.initializeApp();
 
 export const talTest = functions.https.onRequest(async(request, response) => {
@@ -59,7 +60,7 @@ export const sayHi = functions.https.onRequest(async(request, response) => {
 
 });
 
-export const runEpisode = functions.https.onRequest(async(request, response) => {
+export const runEpisode = functions.https.onRequest(async (request, response) => {
     let text:string = request.body.text;
     let payload:any = request.body.payload;
     let episodeInfos = {};
@@ -73,14 +74,10 @@ export const runEpisode = functions.https.onRequest(async(request, response) => 
     let episodeUnderscore = episodeName.replace(/(?:^|\.?)([A-Z])/g, function (x,y) {
         return "_" + y.toLowerCase()
     }).replace(/^_/, "");
-    let packedEpisodeJsonUrl = "http://production-cdn-slatemathweb.s3.amazonaws.com/content/episodes/" + episodeUnderscore + "/.slate.packed_episode.json";
-    http.get(packedEpisodeJsonUrl, function (res) {
-        let cachebuster = res["body"]["cacheBuster"];
-        let episodeUrl = "http://matifictest-a.akamaihd.net/content/episodes/"
-            + episodeUnderscore +
-            "/index$" + cachebuster + ".html?review=true&language=en&chooseRandomSeed=true";
-        response.send(episodeUrl);
-    });
+    let cachebuster = cachebusters[episodeName];
+    let episodeUrl = "http://matifictest-a.akamaihd.net/content/episodes/" + episodeUnderscore +
+        "/index$" + cachebuster + ".html?review=true&language=en&chooseRandomSeed=true";
+    response.send(episodeUrl);
 });
 
 

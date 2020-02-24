@@ -59,6 +59,30 @@ exports.sayHi = functions.https.onRequest((request, response) => __awaiter(void 
         });
     });
 }));
+exports.runEpisode = functions.https.onRequest((request, response) => {
+    let text = request.body.text;
+    let payload = request.body.payload;
+    let episodeInfos = {};
+    for (let episode of episodes["infoList"]) {
+        if (episode.name == text) {
+            episodeInfos = episode;
+            break;
+        }
+    }
+    let episodeName = episodeInfos["name"];
+    let episodeUnderscore = episodeName.replace(/(?:^|\.?)([A-Z])/g, function (x, y) {
+        return "_" + y.toLowerCase();
+    }).replace(/^_/, "");
+    let packedEpisodeJsonUrl = "http://production-cdn-slatemathweb.s3.amazonaws.com/content/episodes/" + episodeUnderscore + "/.slate.packed_episode.json";
+    response.send(packedEpisodeJsonUrl);
+    // http.get(packedEpisodeJsonUrl, function (res) {
+    //     let cachebuster = res["body"]["cacheBuster"];
+    //     let episodeUrl = "http://matifictest-a.akamaihd.net/content/episodes/"
+    //         + episodeUnderscore +
+    //         "/index$" + cachebuster + ".html?review=true&language=en&chooseRandomSeed=true";
+    //     response.send(episodeUrl);
+    // });
+});
 exports.lmnbify = functions.https.onRequest((request, response) => {
     let text = request.body.text;
     response.send("http://internaldata-slatemathweb.s3.amazonaws.com/wiki_resources/lmkbify/lmkbify.html?text=" + text.replace(new RegExp(" ", 'g'), "%20"));
