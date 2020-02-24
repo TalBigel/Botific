@@ -140,9 +140,13 @@ export const runEpisode = functions.https.onRequest(async (request, response) =>
 
     let variantsText = "";
     for (let variant of episodeInfos["parameterPaths"]){
-        variantsText = variantsText +
+        let tempVariants = variantsText +
             "<"+episodeUrl + "&" + variant + "|" +
             variant.replace("Parameters/", "")+">\n";
+        if (tempVariants.length > 2000) {
+            break;
+        }
+        variantsText = tempVariants
     }
 
     let episodeResponse: any = {
