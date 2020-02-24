@@ -45,15 +45,11 @@ export const episodeInfo = functions.https.onRequest(async (request, response) =
                     },
                     {
                         "type": "mrkdwn",
-                        "text": "*status:*\n"+specificEpisodeInfo["title"]
+                        "text": "*status:*\n"+specificEpisodeInfo["status"]
                     },
                     {
                         "type": "mrkdwn",
                         "text": "*storyboardUrl:*\n<"+specificEpisodeInfo["storyboardUrl"]+"|Story Board>"
-                    },
-                    {
-                        "type": "mrkdwn",
-                        "text": "*ownerName:*\n"+specificEpisodeInfo["ownerName"]
                     }
                 ]
             }
