@@ -12,9 +12,22 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const functions = require("firebase-functions");
 const admin = require('firebase-admin');
 const figlet = require("figlet");
+const episodes = require("../metadata/episodes-info.json");
 admin.initializeApp();
 exports.talTest = functions.https.onRequest((request, response) => __awaiter(void 0, void 0, void 0, function* () {
     response.send("Hello");
+}));
+exports.episodeInfo = functions.https.onRequest((request, response) => __awaiter(void 0, void 0, void 0, function* () {
+    let text = request.body.text;
+    let payload = request.body.payload;
+    let episodeInfos = {};
+    for (let episode of episodes["infoList"]) {
+        if (episode.name == text) {
+            episodeInfos = episode;
+            break;
+        }
+    }
+    response.send(JSON.stringify(episodeInfos));
 }));
 exports.sayHi = functions.https.onRequest((request, response) => __awaiter(void 0, void 0, void 0, function* () {
     let fonts = ["Standard", "Train"];

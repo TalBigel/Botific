@@ -5,9 +5,7 @@
     "noImplicitReturns": true,
     "outDir": "lib",
     "sourceMap": true,
-    "target": "es6",
-    "resolveJsonModule": true,
-    "esModuleInterop": true
+    "target": "es6"
   },
   "compileOnSave": true,
   "include": [
