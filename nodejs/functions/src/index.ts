@@ -2123,7 +2123,7 @@ export const localizationInfo = functions.https.onRequest(async(request, respons
         }
     }
 
-    if (!found){
+    /**if (!found){
         for (let localeInfo of locales_info["locales"]){
             let name:string = localeInfo["name"];
             if (name.toLowerCase() == language.toLowerCase()){
@@ -2140,7 +2140,7 @@ export const localizationInfo = functions.https.onRequest(async(request, respons
             }
         }
 
-    }
+    }**/
     if (!found || !specificLanguageInfo["name"]) {
         response.send("Could not find language/code: "+language);
     }
