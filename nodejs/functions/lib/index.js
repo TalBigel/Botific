@@ -21,15 +21,46 @@ exports.talTest = functions.https.onRequest((request, response) => __awaiter(voi
 }));
 exports.episodeInfo = functions.https.onRequest((request, response) => __awaiter(void 0, void 0, void 0, function* () {
     let text = request.body.text;
-    let payload = request.body.payload;
-    let episodeInfos = {};
+    //let payload: any = request.body.payload;
+    let specificEpisodeInfo = {};
     for (let episode of episodes["infoList"]) {
-        if (episode.name == text) {
-            episodeInfos = episode;
-            break;
+        if (text == episode.name) {
+            specificEpisodeInfo = episode;
         }
     }
-    response.send(JSON.stringify(episodeInfos));
+    let infoResponse = {
+        "blocks": [
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": "========== Episode: " + specificEpisodeInfo["name"] + "=========="
+                }
+            },
+            {
+                "type": "section",
+                "fields": [
+                    {
+                        "type": "mrkdwn",
+                        "text": "*Infra Version:*\n" + specificEpisodeInfo["apiVersion"]
+                    },
+                    {
+                        "type": "mrkdwn",
+                        "text": "*title:*\n" + specificEpisodeInfo["title"]
+                    },
+                    {
+                        "type": "mrkdwn",
+                        "text": "*status:*\n" + specificEpisodeInfo["status"]
+                    },
+                    {
+                        "type": "mrkdwn",
+                        "text": "*storyboardUrl:*\n<" + specificEpisodeInfo["storyboardUrl"] + "|Story Board>"
+                    }
+                ]
+            }
+        ]
+    };
+    response.send(infoResponse);
 }));
 exports.sayHi = functions.https.onRequest((request, response) => __awaiter(void 0, void 0, void 0, function* () {
     let fonts = ["Standard", "Train"];
@@ -76,7 +107,7 @@ exports.runEpisode = functions.https.onRequest((request, response) => __awaiter(
         return "_" + y.toLowerCase();
     }).replace(/^_/, "");
     let cachebuster = cachebusters[episodeName];
-    let episodeUrl = "http://http://static1.matific.com/content/episodes/" + episodeUnderscore +
+    let episodeUrl = "http://static1.matific.com/content/episodes/" + episodeUnderscore +
         "/index$" + cachebuster + ".html?review=true&language=en&chooseRandomSeed=true";
     response.send(episodeUrl);
 }));
@@ -1873,16 +1904,7 @@ exports.appVersionInfo = functions.https.onRequest((request, response) => {
     let text = request.body.text;
     let requestedApp = text.split(" ")[0];
     let requestedPlatform = text.split(" ")[1];
-    let appVersion = "";
-    for (let app of apps["appsInfo"]) {
-        if (app == requestedApp) {
-            for (let platform of app) {
-                if (platform == requestedPlatform) {
-                    appVersion = platform.version;
-                }
-            }
-        }
-    }
+    let appVersion = apps["appsInfo"][requestedApp][requestedPlatform].version;
     response.send(appVersion);
 });
 //# sourceMappingURL=index.js.map

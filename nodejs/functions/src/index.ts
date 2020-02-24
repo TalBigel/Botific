@@ -1909,15 +1909,6 @@ export const appVersionInfo = functions.https.onRequest((request, response) => {
     let text:string = request.body.text;
     let requestedApp:string = text.split(" ")[0];
     let requestedPlatform:string = text.split(" ")[1];
-    let appVersion:string = "";
-    for (let app of apps["appsInfo"]) {
-        if(app == requestedApp) {
-            for (let platform of app) {
-                if (platform == requestedPlatform){
-                    appVersion = platform.version;
-                }
-            }
-        }
-    }
+    let appVersion:string = apps["appsInfo"][requestedApp][requestedPlatform].version;
     response.send(appVersion);
 });
