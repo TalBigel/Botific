@@ -117,6 +117,7 @@ export const sayHi = functions.https.onRequest(async (request, response) => {
 export const runEpisode = functions.https.onRequest(async (request, response) => {
     let text:string = request.body.text;
     let payload:any = request.body.payload;
+    text = text.replace(/\s\s+/g, ' ');
     let episodeInfos = {};
     let found:boolean = false;
     let desiredEpisode = "";
