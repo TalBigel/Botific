@@ -2188,17 +2188,17 @@ export const localeInfo = functions.https.onRequest(async(request, response) => 
     let language:string = request.body.text;
     let specificLocaleInfo = {};
     let found = false;
-    for (let localeInfo of locales_info["locales"]){
-        if (localeInfo["name"].toLowerCase() == language.toLowerCase()){
+    for (let localeInfoEntity of locales_info["locales"]){
+        if (localeInfoEntity["name"].toLowerCase() == language.toLowerCase()){
             found = true;
-            specificLocaleInfo = localeInfo;
+            specificLocaleInfo = localeInfoEntity;
         }
     }
     if (!found){
-        for (let localeInfo of locales_info["locales"]){
-            if (localeInfo["code"].toLowerCase() == language.toLowerCase()){
+        for (let localeInfoEntity of locales_info["locales"]){
+            if (localeInfoEntity["code"].toLowerCase() == language.toLowerCase()){
                 found = true;
-                specificLocaleInfo = localeInfo;
+                specificLocaleInfo = localeInfoEntity;
             }
         }
     }
