@@ -1,0 +1,45 @@
+{
+    "type": "metadata",
+    "appsInfo": {
+    	"mmc": {
+    		"web": {
+    			"date": "12.1.2020",
+    			"version": "5.0.6",
+    			"infraVersion": "1.561",
+    			"notes": "arena - events fixes"
+    		},
+    		"ios": {
+				"date": "19.1.2020",
+    			"version": "5.2.2",
+    			"infraVersion": "1.56",
+    			"notes": "SSO no time limit (Ceibal) + fonts packages"
+    		},
+    		"android": {
+				"date": "19.1.2020",
+    			"version": "5.2.2",
+    			"infraVersion": "1.56",
+    			"notes": "SSO no time limit (Ceibal) + fonts packages"
+    		}
+    	},
+    	"pop": {
+    		"web": {
+    			"date": "4.11.19",
+    			"version": "2.0.1",
+    			"infraVersion": "1.52",
+    			"notes": "Hatchery placement at the end of planet selection, inactive bug fix"
+    		},
+    		"ios": {
+    			"date": "20.1.2020",
+    			"version": "2.0.3",
+    			"infraVersion": "1.60",
+    			"notes": "store localization fixes"
+    		},
+    		"android": {
+    			"date": "15.12.19",
+    			"version": "2.0.2",
+    			"infraVersion": "1.60",
+    			"notes": "subscription, download resources extensions, sound library fix"
+    		}
+    	}
+    }
+}
