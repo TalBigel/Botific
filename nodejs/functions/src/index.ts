@@ -119,15 +119,41 @@ export const runEpisode = functions.https.onRequest(async (request, response) =>
     let payload:any = request.body.payload;
     let episodeInfos = {};
     let found:boolean = false;
+    let desiredEpisode = "";
+    let languageCode = "en-us";
+    if (text) {
+        let textParts = text.split(" ");
+        if (textParts.length > 0) {
+            desiredEpisode = textParts[0];
+        }
+        if (textParts.length > 1) {
+            let foundLanguage: boolean = false;
+            let languageOrCode = textParts[1];
+            for (let languageInfo of languages_info["languages"]){
+                if (languageInfo["name"].toLowerCase() == languageOrCode.toLowerCase()){
+                    languageCode = languageInfo["code"];
+                    foundLanguage = true;
+                    break;
+                }
+            }
+            if (!foundLanguage){
+                for (let languageInfo of languages_info["languages"]){
+                    if (languageInfo["code"].toLowerCase() == languageOrCode.toLowerCase()){
+                        languageCode = languageInfo["code"];
+                    }
+                }
+            }
+        }
+    }
     for (let episode of episodes["infoList"]){
-        if (text.toLowerCase() == episode["name"].toLowerCase()){
+        if (desiredEpisode.toLowerCase() == episode["name"].toLowerCase()){
             episodeInfos = episode;
             found = true;
             break;
         }
     }
     if (!found){
-        response.send("Couldn't find the episode "+text+"."+" Please provide the episode dev name!")
+        response.send("Couldn't find the episode "+desiredEpisode+"."+" Please provide the episode dev name!")
         return;
     }
 
@@ -137,7 +163,7 @@ export const runEpisode = functions.https.onRequest(async (request, response) =>
     }).replace(/^_/, "");
     let cachebuster = cachebusters[episodeName];
     let episodeUrl = "http://static1.matific.com/content/episodes/" + episodeUnderscore +
-        "/index$" + cachebuster + ".html?review=true&language=en&chooseRandomSeed=true";
+        "/index$" + cachebuster + ".html?review=true&chooseRandomSeed=true&language=" + languageCode;
 
     let variantsText = "";
     for (let variant of episodeInfos["parameterPaths"]){
@@ -2100,7 +2126,7 @@ export const localizationInfo = functions.https.onRequest(async(request, respons
                 "type": "section",
                 "text": {
                     "type": "mrkdwn",
-                    "text": "========== Language: "+specificLanguageInfo["name"]+"=========="
+                    "text": "========== Language: "+specificLanguageInfo["name"]+" =========="
                 }
             },
             {
@@ -2116,15 +2142,15 @@ export const localizationInfo = functions.https.onRequest(async(request, respons
                     },
                     {
                         "type": "mrkdwn",
-                        "text": "*Geographic Locale:*\n<"+specificLanguageInfo["geographicLocale"]
+                        "text": "*Geographic Locale:*\n"+specificLanguageInfo["geographicLocale"]
                     },
                     {
                         "type": "mrkdwn",
-                        "text": "*direction:*\n"+specificLanguageInfo["direction"]
+                        "text": "*Voiceover Enabled?:*\n"+specificLanguageInfo["enableVoiceOver"]
                     },
                     {
                         "type": "mrkdwn",
-                        "text": "*enableMachineVoiceover:*\n"+specificLanguageInfo["specificLanguageInfo"]
+                        "text": "*Machine Voiceover Enabled?:*\n"+specificLanguageInfo["enableMachineVoiceover"]
                     }
                 ]
             }
