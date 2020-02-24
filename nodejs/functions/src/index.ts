@@ -145,6 +145,24 @@ export const runEpisode = functions.https.onRequest(async (request, response) =>
                     }
                 }
             }
+            if (!foundLanguage) {
+                for (let localsInfoRegistry of locales_info["locales"]){
+                    let name:string = localsInfoRegistry["name"];
+                    if (name.toLowerCase() == languageOrCode.toLowerCase()){
+                        let languageName:string = localsInfoRegistry["languageName"]
+                        for (let languageInfo of languages_info["languages"]){
+                            if (languageInfo["name"].toLowerCase() == languageName.toLowerCase()){
+                                languageCode = languageInfo["code"];
+                                foundLanguage = true;
+                                break;
+                            }
+                        }
+                        if (foundLanguage){
+                            break;
+                        }
+                    }
+                }
+            }
         }
     }
     for (let episode of episodes["infoList"]){
