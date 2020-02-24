@@ -2131,6 +2131,6 @@ export const localizationInfo = functions.https.onRequest(async(request, respons
             }
         ]
     };
-
+    response.send(infoResponse);
 });
 
