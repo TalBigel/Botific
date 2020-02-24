@@ -2184,3 +2184,74 @@ export const localizationInfo = functions.https.onRequest(async(request, respons
     response.send(infoResponse);
 });
 
+export const localeInfo = functions.https.onRequest(async(request, response) => {
+    let language:string = request.body.text;
+    let specificLocaleInfo = {};
+    let found = false;
+    for (let localeInfo of locales_info["locales"]){
+        if (localeInfo["name"].toLowerCase() == language.toLowerCase()){
+            found = true;
+            specificLocaleInfo = localeInfo;
+        }
+    }
+    if (!found){
+        for (let localeInfo of locales_info["locales"]){
+            if (localeInfo["code"].toLowerCase() == language.toLowerCase()){
+                found = true;
+                specificLocaleInfo = localeInfo;
+            }
+        }
+    }
+
+    if (!found || !specificLocaleInfo["name"]) {
+        response.send("Could not find locale/code: "+language);
+    }
+
+    let infoResponse:any = {
+        "blocks": [
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": "========== Locale: "+specificLocaleInfo["name"]+" =========="
+                }
+            },
+            {
+                "type": "section",
+                "fields": [
+                    {
+                        "type": "mrkdwn",
+                        "text": "*Language Name:*\n"+specificLocaleInfo["languageName"]
+                    },
+                    {
+                        "type": "mrkdwn",
+                        "text": "*Currency:*\n"+specificLocaleInfo["currency"]
+                    },
+                    {
+                        "type": "mrkdwn",
+                        "text": "*Three Digit Separator:*\n"+specificLocaleInfo["threeDigitSeparator"]
+                    },
+                    {
+                        "type": "mrkdwn",
+                        "text": "*Floating Point Symbol:*\n"+specificLocaleInfo["floatingPointSymbol"]
+                    },
+                    {
+                        "type": "mrkdwn",
+                        "text": "*First Day Of Week:*\n"+specificLocaleInfo["firstDayOfWeek"]
+                    },
+                    {
+                        "type": "mrkdwn",
+                        "text": "*Imperial?:*\n"+specificLocaleInfo["imperial"]
+                    },
+                    {
+                        "type": "mrkdwn",
+                        "text": "*Remainder Template:*\n"+specificLocaleInfo["remainderTemplate"]
+                    }
+                ]
+            }
+        ]
+    };
+    response.send(infoResponse);
+});
+
+
