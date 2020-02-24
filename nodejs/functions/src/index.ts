@@ -1995,3 +1995,9 @@ export const appVersionInfo = functions.https.onRequest((request, response) => {
         response.send(responseBlock);
     }
 });
+
+export const knowledgebase = functions.https.onRequest(async(request, response) => {
+    let search:string = request.body.text;
+    response.send("https://sites.google.com/search/slatescience.com/knowledgebase?query="+search);
+});
+
