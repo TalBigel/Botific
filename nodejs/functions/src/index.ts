@@ -7,6 +7,7 @@ import * as figlet from 'figlet';
 import * as episodes from '../metadata/episodes-info.json';
 import * as apps from '../metadata/apps-metadata.json';
 import * as cachebusters from '../metadata/cachebuster-metadata.json';
+import * as languages_info from '../metadata/languages-info.json';
 admin.initializeApp();
 
 export const talTest = functions.https.onRequest(async(request, response) => {
@@ -2070,5 +2071,66 @@ export const appVersionInfo = functions.https.onRequest((request, response) => {
 export const knowledgebase = functions.https.onRequest(async(request, response) => {
     let search:string = request.body.text;
     response.send("https://sites.google.com/search/slatescience.com/knowledgebase?query="+search);
+});
+
+export const localizationInfo = functions.https.onRequest(async(request, response) => {
+    let language:string = request.body.text;
+    let specificLanguageInfo = {};
+    let found = false;
+    for (let languageInfo of languages_info["languages"]){
+        if (languageInfo["name"].toLowerCase() == language.toLowerCase()){
+            found = true;
+            specificLanguageInfo = languageInfo;
+        }
+    }
+    if (!found){
+        for (let languageInfo of languages_info["languages"]){
+            if (languageInfo["code"].toLowerCase() == language.toLowerCase()){
+                found = true;
+                specificLanguageInfo = languageInfo;
+            }
+        }
+    }
+    if (!found) {
+        response.send("Could not find language/code: "+language);
+    }
+
+    let infoResponse:any = {
+        "blocks": [
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": "========== Language: "+specificLanguageInfo["name"]+"=========="
+                }
+            },
+            {
+                "type": "section",
+                "fields": [
+                    {
+                        "type": "mrkdwn",
+                        "text": "*code:*\n"+specificLanguageInfo["code"]
+                    },
+                    {
+                        "type": "mrkdwn",
+                        "text": "*Transifex Code:*\n"+specificLanguageInfo["transifexCode"]
+                    },
+                    {
+                        "type": "mrkdwn",
+                        "text": "*Geographic Locale:*\n<"+specificLanguageInfo["geographicLocale"]
+                    },
+                    {
+                        "type": "mrkdwn",
+                        "text": "*direction:*\n"+specificLanguageInfo["direction"]
+                    },
+                    {
+                        "type": "mrkdwn",
+                        "text": "*enableMachineVoiceover:*\n"+specificLanguageInfo["specificLanguageInfo"]
+                    }
+                ]
+            }
+        ]
+    };
+
 });
 
