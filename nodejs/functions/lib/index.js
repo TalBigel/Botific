@@ -23,10 +23,21 @@ exports.episodeInfo = functions.https.onRequest((request, response) => __awaiter
     let text = request.body.text;
     //let payload: any = request.body.payload;
     let specificEpisodeInfo = {};
+    let found = false;
     for (let episode of episodes["infoList"]) {
-        if (text == episode.name) {
+        if (text.toLowerCase() == episode["name"].toLowerCase()) {
             specificEpisodeInfo = episode;
+            found = true;
+            break;
         }
+    }
+    if (!found) {
+        response.send("No info for episode " + text + "." + " Please provide the episode dev name!");
+        return;
+    }
+    let variantsText = "";
+    for (let variant of specificEpisodeInfo["parameterPaths"]) {
+        variantsText = variantsText + variant.replace("Parameters/", "") + "\n";
     }
     let infoResponse = {
         "blocks": [
@@ -55,6 +66,14 @@ exports.episodeInfo = functions.https.onRequest((request, response) => __awaiter
                     {
                         "type": "mrkdwn",
                         "text": "*storyboardUrl:*\n<" + specificEpisodeInfo["storyboardUrl"] + "|Story Board>"
+                    },
+                    {
+                        "type": "mrkdwn",
+                        "text": "*ownerName:*\n" + specificEpisodeInfo["ownerName"]
+                    },
+                    {
+                        "type": "mrkdwn",
+                        "text": "*variants:*\n" + variantsText
                     }
                 ]
             }
@@ -1902,9 +1921,71 @@ exports.talPleaseEnjoyTelAviv = functions.https.onRequest((request, response) =>
 });
 exports.appVersionInfo = functions.https.onRequest((request, response) => {
     let text = request.body.text;
-    let requestedApp = text.split(" ")[0];
-    let requestedPlatform = text.split(" ")[1];
-    let appVersion = apps["appsInfo"][requestedApp][requestedPlatform].version;
-    response.send(appVersion);
+    if (text) {
+        let requestedApp = text.split(" ")[0];
+        let requestedPlatform = text.split(" ")[1];
+        let appVersion = apps["appsInfo"][requestedApp][requestedPlatform].version;
+        response.send(appVersion);
+    }
+    else {
+        let responseBlock = {
+            "blocks": [{
+                    "type": "section",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": "Choose a game!"
+                    },
+                    "accessory": {
+                        "type": "static_select",
+                        "placeholder": {
+                            "type": "plain_text",
+                            "emoji": true,
+                            "text": "Game"
+                        },
+                        "options": [
+                            {
+                                "text": { "type": "plain_text", "text": "POP" },
+                                "value": "pop"
+                            },
+                            {
+                                "text": { "type": "plain_text", "text": "MMC" },
+                                "value": "mmc"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "type": "section",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": "Choose a platform!"
+                    },
+                    "accessory": {
+                        "type": "static_select",
+                        "placeholder": {
+                            "type": "plain_text",
+                            "emoji": true,
+                            "text": "Platform"
+                        },
+                        "options": [
+                            {
+                                "text": { "type": "plain_text", "text": "IOS" },
+                                "value": "ios"
+                            },
+                            {
+                                "text": { "type": "plain_text", "text": "Android" },
+                                "value": "android"
+                            },
+                            {
+                                "text": { "type": "plain_text", "text": "Web" },
+                                "value": "web"
+                            }
+                        ]
+                    }
+                },
+            ]
+        };
+        response.send(responseBlock);
+    }
 });
 //# sourceMappingURL=index.js.map

@@ -1928,8 +1928,70 @@ export const talPleaseEnjoyTelAviv = functions.https.onRequest((request, respons
 
 export const appVersionInfo = functions.https.onRequest((request, response) => {
     let text:string = request.body.text;
-    let requestedApp:string = text.split(" ")[0];
-    let requestedPlatform:string = text.split(" ")[1];
-    let appVersion:string = apps["appsInfo"][requestedApp][requestedPlatform].version;
-    response.send(appVersion);
+    if (text) {
+        let requestedApp:string = text.split(" ")[0];
+        let requestedPlatform:string = text.split(" ")[1];
+        let appVersion:string = apps["appsInfo"][requestedApp][requestedPlatform].version;
+        response.send(appVersion);
+    }
+
+    else {
+        let responseBlock = {
+            "blocks": [{
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": "Choose a game!"
+                },
+                "accessory": {
+                    "type": "static_select",
+                    "placeholder": {
+                        "type": "plain_text",
+                        "emoji": true,
+                        "text": "Game"
+                    },
+                    "options": [
+                        {
+                            "text": {"type": "plain_text", "text": "POP"},
+                            "value": "pop"
+                        },
+                        {
+                            "text": {"type": "plain_text", "text": "MMC"},
+                            "value": "mmc"
+                        }]
+                }
+            },
+                {
+                    "type": "section",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": "Choose a platform!"
+                    },
+                    "accessory": {
+                        "type": "static_select",
+                        "placeholder": {
+                            "type": "plain_text",
+                            "emoji": true,
+                            "text": "Platform"
+                        },
+                        "options": [
+                            {
+                                "text": {"type": "plain_text", "text": "IOS"},
+                                "value": "ios"
+                            },
+                            {
+                                "text": {"type": "plain_text", "text": "Android"},
+                                "value": "android"
+                            },
+                            {
+                                "text": {"type": "plain_text", "text": "Web"},
+                                "value": "web"
+                            }
+                        ]
+                    }
+                },
+            ]
+        };
+        response.send(responseBlock);
+    }
 });
