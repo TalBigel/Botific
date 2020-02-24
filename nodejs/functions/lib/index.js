@@ -15,6 +15,7 @@ const figlet = require("figlet");
 const episodes = require("../metadata/episodes-info.json");
 const apps = require("../metadata/apps-metadata.json");
 const cachebusters = require("../metadata/cachebuster-metadata.json");
+const languages_info = require("../metadata/languages-info.json");
 admin.initializeApp();
 exports.talTest = functions.https.onRequest((request, response) => __awaiter(void 0, void 0, void 0, function* () {
     response.send("Hello");
@@ -1959,33 +1960,33 @@ exports.appVersionInfo = functions.https.onRequest((request, response) => {
         let requestedApp = text.split(" ")[0].toLowerCase();
         let requestedPlatform = text.split(" ")[1].toLowerCase();
         let appData = apps["appsInfo"][requestedApp][requestedPlatform];
-        // let responseBlock = {
-        //     "blocks": [{
-        //         "type": "section",
-        //         "text": "========== Game: "+ requestedApp +"=========="
-        //     },
-        //     {
-        //         "type": "section",
-        //         "fields": [
-        //             {
-        //                 "type": "mrkdwn",
-        //                 "text": "*Date:*\n"+appData["date"]
-        //             },
-        //             {
-        //                 "type": "mrkdwn",
-        //                 "text": "*Version:*\n"+appData["version"]
-        //             },
-        //             {
-        //                 "type": "mrkdwn",
-        //                 "text": "*Infra Version:*\n"+appData["infraVersion"]
-        //             },
-        //             {
-        //                 "type": "mrkdwn",
-        //                 "text": "*Notes:*\n<"+appData["notes"]
-        //             }
-        //         ]
-        //     }]
-        // };
+        let responseBlock = {
+            "blocks": [{
+                    "type": "section",
+                    "text": "========== Game: " + requestedApp + "=========="
+                }]
+            // {
+            //     "type": "section",
+            //     "fields": [
+            //         {
+            //             "type": "mrkdwn",
+            //             "text": "*Date:*\n"+appData["date"]
+            //         },
+            //         {
+            //             "type": "mrkdwn",
+            //             "text": "*Version:*\n"+appData["version"]
+            //         },
+            //         {
+            //             "type": "mrkdwn",
+            //             "text": "*Infra Version:*\n"+appData["infraVersion"]
+            //         },
+            //         {
+            //             "type": "mrkdwn",
+            //             "text": "*Notes:*\n<"+appData["notes"]
+            //         }
+            //     ]
+            // }]
+        };
         response.send(appData.version);
     }
     else {
@@ -2059,5 +2060,64 @@ exports.appVersionInfo = functions.https.onRequest((request, response) => {
 exports.knowledgebase = functions.https.onRequest((request, response) => __awaiter(void 0, void 0, void 0, function* () {
     let search = request.body.text;
     response.send("https://sites.google.com/search/slatescience.com/knowledgebase?query=" + search);
+}));
+exports.localizationInfo = functions.https.onRequest((request, response) => __awaiter(void 0, void 0, void 0, function* () {
+    let language = request.body.text;
+    let specificLanguageInfo = {};
+    let found = false;
+    for (let languageInfo of languages_info["languages"]) {
+        if (languageInfo["name"].toLowerCase() == language.toLowerCase()) {
+            found = true;
+            specificLanguageInfo = languageInfo;
+        }
+    }
+    if (!found) {
+        for (let languageInfo of languages_info["languages"]) {
+            if (languageInfo["code"].toLowerCase() == language.toLowerCase()) {
+                found = true;
+                specificLanguageInfo = languageInfo;
+            }
+        }
+    }
+    if (!found) {
+        response.send("Could not find language/code: " + language);
+    }
+    let infoResponse = {
+        "blocks": [
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": "========== Language: " + specificLanguageInfo["name"] + "=========="
+                }
+            },
+            {
+                "type": "section",
+                "fields": [
+                    {
+                        "type": "mrkdwn",
+                        "text": "*code:*\n" + specificLanguageInfo["code"]
+                    },
+                    {
+                        "type": "mrkdwn",
+                        "text": "*Transifex Code:*\n" + specificLanguageInfo["transifexCode"]
+                    },
+                    {
+                        "type": "mrkdwn",
+                        "text": "*Geographic Locale:*\n<" + specificLanguageInfo["geographicLocale"]
+                    },
+                    {
+                        "type": "mrkdwn",
+                        "text": "*direction:*\n" + specificLanguageInfo["direction"]
+                    },
+                    {
+                        "type": "mrkdwn",
+                        "text": "*enableMachineVoiceover:*\n" + specificLanguageInfo["specificLanguageInfo"]
+                    }
+                ]
+            }
+        ]
+    };
+    response.send(infoResponse);
 }));
 //# sourceMappingURL=index.js.map

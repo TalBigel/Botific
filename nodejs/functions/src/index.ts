@@ -1997,7 +1997,7 @@ export const appVersionInfo = functions.https.onRequest((request, response) => {
             //     ]
             // }]
         };
-        response.send(appData.version);
+        response.send(responseBlock);
     }
     else {
         let responseBlock = {
