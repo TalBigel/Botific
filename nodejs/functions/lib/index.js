@@ -1959,34 +1959,34 @@ exports.appVersionInfo = functions.https.onRequest((request, response) => {
         let requestedApp = text.split(" ")[0].toLowerCase();
         let requestedPlatform = text.split(" ")[1].toLowerCase();
         let appData = apps["appsInfo"][requestedApp][requestedPlatform];
-        let responseBlock = {
-            "blocks": [{
-                    "type": "section",
-                    "text": "========== Game: " + requestedApp + "=========="
-                },
-                {
-                    "type": "section",
-                    "fields": [
-                        {
-                            "type": "mrkdwn",
-                            "text": "*Date:*\n" + appData["date"]
-                        },
-                        {
-                            "type": "mrkdwn",
-                            "text": "*Version:*\n" + appData["version"]
-                        },
-                        {
-                            "type": "mrkdwn",
-                            "text": "*Infra Version:*\n" + appData["infraVersion"]
-                        },
-                        {
-                            "type": "mrkdwn",
-                            "text": "*Notes:*\n<" + appData["notes"]
-                        }
-                    ]
-                }]
-        };
-        response.send(responseBlock);
+        // let responseBlock = {
+        //     "blocks": [{
+        //         "type": "section",
+        //         "text": "========== Game: "+ requestedApp +"=========="
+        //     },
+        //     {
+        //         "type": "section",
+        //         "fields": [
+        //             {
+        //                 "type": "mrkdwn",
+        //                 "text": "*Date:*\n"+appData["date"]
+        //             },
+        //             {
+        //                 "type": "mrkdwn",
+        //                 "text": "*Version:*\n"+appData["version"]
+        //             },
+        //             {
+        //                 "type": "mrkdwn",
+        //                 "text": "*Infra Version:*\n"+appData["infraVersion"]
+        //             },
+        //             {
+        //                 "type": "mrkdwn",
+        //                 "text": "*Notes:*\n<"+appData["notes"]
+        //             }
+        //         ]
+        //     }]
+        // };
+        response.send(appData.version);
     }
     else {
         let responseBlock = {

@@ -1968,37 +1968,36 @@ export const appVersionInfo = functions.https.onRequest((request, response) => {
     if (text) {
         let requestedApp:string = text.split(" ")[0].toLowerCase();
         let requestedPlatform:string = text.split(" ")[1].toLowerCase();
-        let appData:string = apps["appsInfo"][requestedApp][requestedPlatform];
+        let appData:any = apps["appsInfo"][requestedApp][requestedPlatform];
         let responseBlock = {
             "blocks": [{
                 "type": "section",
                 "text": "========== Game: "+ requestedApp +"=========="
-            },
-            {
-                "type": "section",
-                "fields": [
-                    {
-                        "type": "mrkdwn",
-                        "text": "*Date:*\n"+appData["date"]
-                    },
-                    {
-                        "type": "mrkdwn",
-                        "text": "*Version:*\n"+appData["version"]
-                    },
-                    {
-                        "type": "mrkdwn",
-                        "text": "*Infra Version:*\n"+appData["infraVersion"]
-                    },
-                    {
-                        "type": "mrkdwn",
-                        "text": "*Notes:*\n<"+appData["notes"]
-                    }
-                ]
             }]
+            // {
+            //     "type": "section",
+            //     "fields": [
+            //         {
+            //             "type": "mrkdwn",
+            //             "text": "*Date:*\n"+appData["date"]
+            //         },
+            //         {
+            //             "type": "mrkdwn",
+            //             "text": "*Version:*\n"+appData["version"]
+            //         },
+            //         {
+            //             "type": "mrkdwn",
+            //             "text": "*Infra Version:*\n"+appData["infraVersion"]
+            //         },
+            //         {
+            //             "type": "mrkdwn",
+            //             "text": "*Notes:*\n<"+appData["notes"]
+            //         }
+            //     ]
+            // }]
         };
-        response.send(responseBlock);
+        response.send(appData.version);
     }
-
     else {
         let responseBlock = {
             "blocks": [{
