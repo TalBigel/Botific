@@ -5,8 +5,8 @@ import * as http from 'http';
 import * as http_request from 'request';
 import * as figlet from 'figlet';
 import * as episodes from '../metadata/episodes-info.json';
-import * as apps from '..metadata/apps-metadata.json';
-import * as cachebusters from '../cachebuster-metadata.json';
+import * as apps from '../metadata/apps-metadata.json';
+import * as cachebusters from '../metadata/cachebuster-metadata.json';
 admin.initializeApp();
 
 export const talTest = functions.https.onRequest(async(request, response) => {

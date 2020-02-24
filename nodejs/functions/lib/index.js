@@ -13,6 +13,8 @@ const functions = require("firebase-functions");
 const admin = require('firebase-admin');
 const figlet = require("figlet");
 const episodes = require("../metadata/episodes-info.json");
+const apps = require("../metadata/apps-metadata.json");
+const cachebusters = require("../metadata/cachebuster-metadata.json");
 admin.initializeApp();
 exports.talTest = functions.https.onRequest((request, response) => __awaiter(void 0, void 0, void 0, function* () {
     response.send("Hello");
@@ -59,7 +61,7 @@ exports.sayHi = functions.https.onRequest((request, response) => __awaiter(void 
         });
     });
 }));
-exports.runEpisode = functions.https.onRequest((request, response) => {
+exports.runEpisode = functions.https.onRequest((request, response) => __awaiter(void 0, void 0, void 0, function* () {
     let text = request.body.text;
     let payload = request.body.payload;
     let episodeInfos = {};
@@ -73,16 +75,11 @@ exports.runEpisode = functions.https.onRequest((request, response) => {
     let episodeUnderscore = episodeName.replace(/(?:^|\.?)([A-Z])/g, function (x, y) {
         return "_" + y.toLowerCase();
     }).replace(/^_/, "");
-    let packedEpisodeJsonUrl = "http://production-cdn-slatemathweb.s3.amazonaws.com/content/episodes/" + episodeUnderscore + "/.slate.packed_episode.json";
-    response.send(packedEpisodeJsonUrl);
-    // http.get(packedEpisodeJsonUrl, function (res) {
-    //     let cachebuster = res["body"]["cacheBuster"];
-    //     let episodeUrl = "http://matifictest-a.akamaihd.net/content/episodes/"
-    //         + episodeUnderscore +
-    //         "/index$" + cachebuster + ".html?review=true&language=en&chooseRandomSeed=true";
-    //     response.send(episodeUrl);
-    // });
-});
+    let cachebuster = cachebusters[episodeName];
+    let episodeUrl = "http://matifictest-a.akamaihd.net/content/episodes/" + episodeUnderscore +
+        "/index$" + cachebuster + ".html?review=true&language=en&chooseRandomSeed=true";
+    response.send(episodeUrl);
+}));
 exports.lmnbify = functions.https.onRequest((request, response) => {
     let text = request.body.text;
     response.send("http://internaldata-slatemathweb.s3.amazonaws.com/wiki_resources/lmkbify/lmkbify.html?text=" + text.replace(new RegExp(" ", 'g'), "%20"));
@@ -1871,5 +1868,21 @@ exports.talPleaseEnjoyTelAviv = functions.https.onRequest((request, response) =>
         "Where: " + randomItem.vicinity + "\n" +
         "Distance±: " + randomItem.distance + "\n" +
         "What: " + randomItem.category.id + "\n");
+});
+exports.appVersionInfo = functions.https.onRequest((request, response) => {
+    let text = request.body.text;
+    let requestedApp = text.split(" ")[0];
+    let requestedPlatform = text.split(" ")[1];
+    let appVersion = "";
+    for (let app of apps["appsInfo"]) {
+        if (app == requestedApp) {
+            for (let platform of app) {
+                if (platform == requestedPlatform) {
+                    appVersion = platform.version;
+                }
+            }
+        }
+    }
+    response.send(appVersion);
 });
 //# sourceMappingURL=index.js.map
