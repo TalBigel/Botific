@@ -115,11 +115,17 @@ exports.runEpisode = functions.https.onRequest((request, response) => __awaiter(
     let text = request.body.text;
     let payload = request.body.payload;
     let episodeInfos = {};
+    let found = false;
     for (let episode of episodes["infoList"]) {
-        if (episode.name == text) {
+        if (text.toLowerCase() == episode["name"].toLowerCase()) {
             episodeInfos = episode;
+            found = true;
             break;
         }
+    }
+    if (!found) {
+        response.send("Couldn't find the episode " + text + "." + " Please provide the episode dev name!");
+        return;
     }
     let episodeName = episodeInfos["name"];
     let episodeUnderscore = episodeName.replace(/(?:^|\.?)([A-Z])/g, function (x, y) {
@@ -128,36 +134,32 @@ exports.runEpisode = functions.https.onRequest((request, response) => __awaiter(
     let cachebuster = cachebusters[episodeName];
     let episodeUrl = "http://static1.matific.com/content/episodes/" + episodeUnderscore +
         "/index$" + cachebuster + ".html?review=true&language=en&chooseRandomSeed=true";
-    let episodeNameBlock = {
-        "type": "section",
-        "text": {
-            "type": "mrkdwn",
-            "text": "========== Episode: " + episodeName + "=========="
-        }
-    };
     let variantsText = "";
     for (let variant of episodeInfos["parameterPaths"]) {
-        variantsText = variantsText + variant.replace("Parameters/", "") + "\n";
-    }
-    let parameterPaths = episodeInfos["parameterPaths"];
-    let variantsBlocks = [];
-    for (let path of parameterPaths) {
-        variantsBlocks.push({
-            "type": "mrkdwn",
-            "text": "\n<" + episodeUrl + "&" + path + "|" + path + ">"
-        });
-    }
-    let variantsContainerBlock = {
-        "type": "section",
-        "text": {
-            "type": "mrkdwn",
-            "text": variantsText
+        let tempVariants = variantsText +
+            "<" + episodeUrl + "&" + variant + "|" +
+            variant.replace("Parameters/", "") + ">\n";
+        if (tempVariants.length > 2000) {
+            break;
         }
-    };
+        variantsText = tempVariants;
+    }
     let episodeResponse = {
         "blocks": [
-            episodeNameBlock,
-            variantsContainerBlock
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": "========== Episode: " + episodeName + "=========="
+                }
+            },
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": variantsText
+                }
+            }
         ]
     };
     response.send(episodeResponse);
@@ -1954,10 +1956,37 @@ exports.talPleaseEnjoyTelAviv = functions.https.onRequest((request, response) =>
 exports.appVersionInfo = functions.https.onRequest((request, response) => {
     let text = request.body.text;
     if (text) {
-        let requestedApp = text.split(" ")[0];
-        let requestedPlatform = text.split(" ")[1];
-        let appVersion = apps["appsInfo"][requestedApp][requestedPlatform].version;
-        response.send(appVersion);
+        let requestedApp = text.split(" ")[0].toLowerCase();
+        let requestedPlatform = text.split(" ")[1].toLowerCase();
+        let appData = apps["appsInfo"][requestedApp][requestedPlatform];
+        let responseBlock = {
+            "blocks": [{
+                    "type": "section",
+                    "text": "========== Game: " + requestedApp + "=========="
+                },
+                {
+                    "type": "section",
+                    "fields": [
+                        {
+                            "type": "mrkdwn",
+                            "text": "*Date:*\n" + appData["date"]
+                        },
+                        {
+                            "type": "mrkdwn",
+                            "text": "*Version:*\n" + appData["version"]
+                        },
+                        {
+                            "type": "mrkdwn",
+                            "text": "*Infra Version:*\n" + appData["infraVersion"]
+                        },
+                        {
+                            "type": "mrkdwn",
+                            "text": "*Notes:*\n<" + appData["notes"]
+                        }
+                    ]
+                }]
+        };
+        response.send(responseBlock);
     }
     else {
         let responseBlock = {
@@ -2015,9 +2044,20 @@ exports.appVersionInfo = functions.https.onRequest((request, response) => {
                         ]
                     }
                 },
+                {
+                    "type": "button",
+                    "text": {
+                        "type": "plain_text",
+                        "text": "Search"
+                    }
+                }
             ]
         };
         response.send(responseBlock);
     }
 });
+exports.knowledgebase = functions.https.onRequest((request, response) => __awaiter(void 0, void 0, void 0, function* () {
+    let search = request.body.text;
+    response.send("https://sites.google.com/search/slatescience.com/knowledgebase?query=" + search);
+}));
 //# sourceMappingURL=index.js.map

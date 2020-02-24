@@ -1974,28 +1974,28 @@ export const appVersionInfo = functions.https.onRequest((request, response) => {
                 "type": "section",
                 "text": "========== Game: "+ requestedApp +"=========="
             },
-                {
-                    "type": "section",
-                    "fields": [
-                        {
-                            "type": "mrkdwn",
-                            "text": "*Date:*\n"+appData["date"]
-                        },
-                        {
-                            "type": "mrkdwn",
-                            "text": "*Version:*\n"+appData["version"]
-                        },
-                        {
-                            "type": "mrkdwn",
-                            "text": "*Infra Version:*\n"+appData["infraVersion"]
-                        },
-                        {
-                            "type": "mrkdwn",
-                            "Notes": "*Notes:*\n<"+appData["notes"]
-                        }
-                    ]
-                }]
-        }
+            {
+                "type": "section",
+                "fields": [
+                    {
+                        "type": "mrkdwn",
+                        "text": "*Date:*\n"+appData["date"]
+                    },
+                    {
+                        "type": "mrkdwn",
+                        "text": "*Version:*\n"+appData["version"]
+                    },
+                    {
+                        "type": "mrkdwn",
+                        "text": "*Infra Version:*\n"+appData["infraVersion"]
+                    },
+                    {
+                        "type": "mrkdwn",
+                        "text": "*Notes:*\n<"+appData["notes"]
+                    }
+                ]
+            }]
+        };
         response.send(responseBlock);
     }
 
