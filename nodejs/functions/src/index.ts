@@ -5,11 +5,13 @@ import * as http from 'http';
 import * as http_request from 'request';
 import * as figlet from 'figlet';
 import * as episodes from '../metadata/episodes-info.json';
+import * as apps from '..metadata/apps-metadata.json';
 admin.initializeApp();
 
 export const talTest = functions.https.onRequest(async(request, response) => {
     response.send("Hello");
 });
+
 export const episodeInfo = functions.https.onRequest(async(request, response) => {
     let text:string = request.body.text;
     let payload:any = request.body.payload;
@@ -1874,3 +1876,19 @@ export const talPleaseEnjoyTelAviv = functions.https.onRequest((request, respons
     );
 });
 
+export const appVersionInfo = functions.https.onRequest((request, response) => {
+    let text:string = request.body.text;
+    let requestedApp:string = text.split(" ")[0];
+    let requestedPlatform:string = text.split(" ")[1];
+    let appVersion:string = "";
+    for (let app of apps["appsInfo"]) {
+        if(app == requestedApp) {
+            for (let platform of app) {
+                if (platform == requestedPlatform){
+                    appVersion = platform.version;
+                }
+            }
+        }
+    }
+    response.send(appVersion);
+});
