@@ -2121,7 +2121,26 @@ export const localizationInfo = functions.https.onRequest(async(request, respons
             }
         }
     }
-    if (!found) {
+
+    if (!found){
+        for (let localeInfo of locales_info["locales"]){
+            let name:string = localeInfo["name"];
+            if (name.toLowerCase() == language.toLowerCase()){
+                for (let languageInfo of languages_info["languages"]){
+                    if (languageInfo["name"].toLowerCase() == name){
+                        specificLanguageInfo = languageInfo;
+                        found = true;
+                        break;
+                    }
+                }
+                if (found){
+                    break;
+                }
+            }
+        }
+
+    }
+    if (!found || !specificLanguageInfo["name"]) {
         response.send("Could not find language/code: "+language);
     }
 
