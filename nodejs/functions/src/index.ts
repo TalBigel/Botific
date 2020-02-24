@@ -8,7 +8,7 @@ import * as episodes from '../metadata/episodes-info.json';
 import * as apps from '../metadata/apps-metadata.json';
 import * as cachebusters from '../metadata/cachebuster-metadata.json';
 import * as languages_info from '../metadata/languages-info.json';
-import * as locales_info from '../metadata/locales-info.json';
+import * as locales_info from '../metadata/geographiclocales-info.json';
 admin.initializeApp();
 
 export const talTest = functions.https.onRequest(async(request, response) => {
