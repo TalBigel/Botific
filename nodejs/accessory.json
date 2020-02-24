@@ -1,0 +1,36 @@
+{
+  "blocks": [
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": "========== Episode: =========="
+      }
+    },
+    {
+      "type": "section",
+      "fields": [
+        {
+          "type": "mrkdwn",
+          "text": "*Infra Version:*\n"
+        },
+        {
+          "type": "mrkdwn",
+          "text": "*title:*\n"
+        },
+        {
+          "type": "mrkdwn",
+          "text": "*status:*\n"
+        },
+        {
+          "type": "mrkdwn",
+          "text": "*storyboardUrl:*\n<fakeLink.toEmployeeProfile.com|Fred Enriquez>"
+        },
+        {
+          "type": "mrkdwn",
+          "text": "*ownerName:*\n"
+        }
+      ]
+    }
+  ]
+}
