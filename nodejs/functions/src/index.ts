@@ -117,12 +117,19 @@ export const runEpisode = functions.https.onRequest(async (request, response) =>
     let text:string = request.body.text;
     let payload:any = request.body.payload;
     let episodeInfos = {};
+    let found:boolean = false;
     for (let episode of episodes["infoList"]){
-        if (episode.name == text){
+        if (text.toLowerCase() == episode["name"].toLowerCase()){
             episodeInfos = episode;
+            found = true;
             break;
         }
     }
+    if (!found){
+        response.send("Couldn't find the episode "+text+"."+" Please provide the episode dev name!")
+        return;
+    }
+
     let episodeName = episodeInfos["name"];
     let episodeUnderscore = episodeName.replace(/(?:^|\.?)([A-Z])/g, function (x,y) {
         return "_" + y.toLowerCase()
@@ -130,14 +137,6 @@ export const runEpisode = functions.https.onRequest(async (request, response) =>
     let cachebuster = cachebusters[episodeName];
     let episodeUrl = "http://static1.matific.com/content/episodes/" + episodeUnderscore +
         "/index$" + cachebuster + ".html?review=true&language=en&chooseRandomSeed=true";
-
-    let episodeNameBlock = {
-        "type": "section",
-        "text": {
-            "type": "mrkdwn",
-            "text": "========== Episode: " + episodeName + "=========="
-        }
-    };
 
     let variantsText = "";
     for (let variant of episodeInfos["parameterPaths"]){
