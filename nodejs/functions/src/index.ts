@@ -4,6 +4,8 @@ import * as https from 'https';
 import * as http from 'http';
 import * as http_request from 'request';
 import * as figlet from 'figlet';
+import episodes from '../metadata/episodes-info.json'
+
 admin.initializeApp();
 
 export const talTest = functions.https.onRequest(async(request, response) => {
@@ -12,7 +14,14 @@ export const talTest = functions.https.onRequest(async(request, response) => {
 export const episodeInfo = functions.https.onRequest(async(request, response) => {
     let text:string = request.body.text;
     let payload:any = request.body.payload;
-    response.send("Nothing");
+    let episodeInfo = {};
+    for (let episode of episodes.infoList){
+        if (episode.name == text){
+            episodeInfo = episode;
+            break;
+        }
+    }
+    response.send(JSON.stringify(episodeInfo));
 
 });
 
