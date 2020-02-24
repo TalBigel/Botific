@@ -9,6 +9,12 @@ admin.initializeApp();
 export const talTest = functions.https.onRequest(async(request, response) => {
     response.send("Hello");
 });
+export const episodeInfo = functions.https.onRequest(async(request, response) => {
+    let text:string = request.body.text;
+    let payload:any = request.body.payload;
+    response.send("Nothing");
+
+});
 
 export const sayHi = functions.https.onRequest(async(request, response) => {
     let fonts:string[] = ["Standard", "Train"];
