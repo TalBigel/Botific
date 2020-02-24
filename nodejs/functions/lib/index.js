@@ -117,15 +117,41 @@ exports.runEpisode = functions.https.onRequest((request, response) => __awaiter(
     let payload = request.body.payload;
     let episodeInfos = {};
     let found = false;
+    let desiredEpisode = "";
+    let languageCode = "en-us";
+    if (text) {
+        let textParts = text.split(" ");
+        if (textParts.length > 0) {
+            desiredEpisode = textParts[0];
+        }
+        if (textParts.length > 1) {
+            let foundLanguage = false;
+            let languageOrCode = textParts[1];
+            for (let languageInfo of languages_info["languages"]) {
+                if (languageInfo["name"].toLowerCase() == languageOrCode.toLowerCase()) {
+                    languageCode = languageInfo["code"];
+                    foundLanguage = true;
+                    break;
+                }
+            }
+            if (!foundLanguage) {
+                for (let languageInfo of languages_info["languages"]) {
+                    if (languageInfo["code"].toLowerCase() == languageOrCode.toLowerCase()) {
+                        languageCode = languageInfo["code"];
+                    }
+                }
+            }
+        }
+    }
     for (let episode of episodes["infoList"]) {
-        if (text.toLowerCase() == episode["name"].toLowerCase()) {
+        if (desiredEpisode.toLowerCase() == episode["name"].toLowerCase()) {
             episodeInfos = episode;
             found = true;
             break;
         }
     }
     if (!found) {
-        response.send("Couldn't find the episode " + text + "." + " Please provide the episode dev name!");
+        response.send("Couldn't find the episode " + desiredEpisode + "." + " Please provide the episode dev name!");
         return;
     }
     let episodeName = episodeInfos["name"];
@@ -134,7 +160,7 @@ exports.runEpisode = functions.https.onRequest((request, response) => __awaiter(
     }).replace(/^_/, "");
     let cachebuster = cachebusters[episodeName];
     let episodeUrl = "http://static1.matific.com/content/episodes/" + episodeUnderscore +
-        "/index$" + cachebuster + ".html?review=true&language=en&chooseRandomSeed=true";
+        "/index$" + cachebuster + ".html?review=true&chooseRandomSeed=true&language=" + languageCode;
     let variantsText = "";
     for (let variant of episodeInfos["parameterPaths"]) {
         let tempVariants = variantsText +
@@ -1963,31 +1989,34 @@ exports.appVersionInfo = functions.https.onRequest((request, response) => {
         let responseBlock = {
             "blocks": [{
                     "type": "section",
-                    "text": "========== Game: " + requestedApp + "=========="
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": "========== Game: " + requestedApp + "=========="
+                    }
+                },
+                {
+                    "type": "section",
+                    "fields": [
+                        {
+                            "type": "mrkdwn",
+                            "text": "*Date:*\n" + appData["date"]
+                        },
+                        {
+                            "type": "mrkdwn",
+                            "text": "*Version:*\n" + appData["version"]
+                        },
+                        {
+                            "type": "mrkdwn",
+                            "text": "*Infra Version:*\n" + appData["infraVersion"]
+                        },
+                        {
+                            "type": "mrkdwn",
+                            "text": "*Notes:*\n<" + appData["notes"]
+                        }
+                    ]
                 }]
-            // {
-            //     "type": "section",
-            //     "fields": [
-            //         {
-            //             "type": "mrkdwn",
-            //             "text": "*Date:*\n"+appData["date"]
-            //         },
-            //         {
-            //             "type": "mrkdwn",
-            //             "text": "*Version:*\n"+appData["version"]
-            //         },
-            //         {
-            //             "type": "mrkdwn",
-            //             "text": "*Infra Version:*\n"+appData["infraVersion"]
-            //         },
-            //         {
-            //             "type": "mrkdwn",
-            //             "text": "*Notes:*\n<"+appData["notes"]
-            //         }
-            //     ]
-            // }]
         };
-        response.send(appData.version);
+        response.send(responseBlock);
     }
     else {
         let responseBlock = {
@@ -2088,7 +2117,7 @@ exports.localizationInfo = functions.https.onRequest((request, response) => __aw
                 "type": "section",
                 "text": {
                     "type": "mrkdwn",
-                    "text": "========== Language: " + specificLanguageInfo["name"] + "=========="
+                    "text": "========== Language: " + specificLanguageInfo["name"] + " =========="
                 }
             },
             {
@@ -2104,15 +2133,15 @@ exports.localizationInfo = functions.https.onRequest((request, response) => __aw
                     },
                     {
                         "type": "mrkdwn",
-                        "text": "*Geographic Locale:*\n<" + specificLanguageInfo["geographicLocale"]
+                        "text": "*Geographic Locale:*\n" + specificLanguageInfo["geographicLocale"]
                     },
                     {
                         "type": "mrkdwn",
-                        "text": "*direction:*\n" + specificLanguageInfo["direction"]
+                        "text": "*Voiceover Enabled?:*\n" + specificLanguageInfo["enableVoiceOver"]
                     },
                     {
                         "type": "mrkdwn",
-                        "text": "*enableMachineVoiceover:*\n" + specificLanguageInfo["specificLanguageInfo"]
+                        "text": "*Machine Voiceover Enabled?:*\n" + specificLanguageInfo["enableMachineVoiceover"]
                     }
                 ]
             }
