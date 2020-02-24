@@ -33,7 +33,7 @@ export const episodeInfo = functions.https.onRequest(async (request, response) =
 
     let variantsText = "";
     for (let variant of specificEpisodeInfo["parameterPaths"]){
-        variantsText+variant.replace("Parameters/", "")+"\n";
+        variantsText = variantsText+variant.replace("Parameters/", "")+"\n";
     }
 
     let infoResponse:any = {
