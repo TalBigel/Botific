@@ -12,8 +12,8 @@
   "dependencies": {
     "ascii-art": "^2.5.0",
     "figlet": "^1.2.4",
-    "firebase-admin": "^8.8.0",
-    "firebase-functions": "^3.3.0",
+    "firebase-admin": "^11.4.1",
+    "firebase-functions": "^3.24.1",
     "request": "^2.88.2",
     "sync-request": "^6.1.0"
   },
